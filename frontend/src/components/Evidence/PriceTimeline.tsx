@@ -86,7 +86,7 @@ export default function PriceTimeline({ data, lang }: Props) {
               label={{ value: yLabel, angle: -90, position: "insideLeft", fill: "#52525b", fontSize: 10 }}
             />
             <Tooltip
-              contentStyle={{ background: "#18181b", border: "1px solid #3f3f46", borderRadius: 6, fontSize: 11 }}
+              contentStyle={{ background: "#242220", border: "1px solid #403c37", borderRadius: 6, fontSize: 11 }}
               labelStyle={{ color: "#a1a1aa" }}
               formatter={(v: number, name: string) => [`$${v?.toFixed(3)}`, name]}
             />

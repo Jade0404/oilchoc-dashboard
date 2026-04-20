@@ -177,7 +177,7 @@ export default function ReformOptimizer() {
                       <XAxis dataKey="month" tick={{ fill: "#52525b", fontSize: 10 }} tickLine={false} />
                       <YAxis tick={{ fill: "#52525b", fontSize: 10 }} tickLine={false} axisLine={false} />
                       <Tooltip
-                        contentStyle={{ background: "#18181b", border: "1px solid #3f3f46", borderRadius: 6, fontSize: 11 }}
+                        contentStyle={{ background: "#242220", border: "1px solid #403c37", borderRadius: 6, fontSize: 11 }}
                         labelStyle={{ color: "#a1a1aa" }}
                         formatter={(v: number) => [`${v.toFixed(1)}%`]}
                         labelFormatter={(l) => `Month ${l}`}

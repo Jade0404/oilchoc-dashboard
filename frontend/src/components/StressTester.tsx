@@ -200,7 +200,7 @@ export default function StressTester() {
                     label={{ value: tr("shockProbAxis"), angle: -90, position: "insideLeft", fill: "#52525b", fontSize: 11 }}
                   />
                   <Tooltip
-                    contentStyle={{ background: "#18181b", border: "1px solid #3f3f46", borderRadius: 6, fontSize: 12 }}
+                    contentStyle={{ background: "#242220", border: "1px solid #403c37", borderRadius: 6, fontSize: 12 }}
                     labelStyle={{ color: "#a1a1aa" }}
                     itemStyle={{ color: "#e4e4e7" }}
                     formatter={(v: number) => [`${v.toFixed(1)}%`]}

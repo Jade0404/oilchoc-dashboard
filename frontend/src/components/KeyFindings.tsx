@@ -15,7 +15,7 @@ export default function KeyFindings() {
   const tr = useTranslations(lang);
 
   return (
-    <section className="border-b border-zinc-800 bg-[#0f0f0f] px-6 py-6 md:px-12">
+    <section className="border-b border-zinc-800 bg-[#201f1d] px-6 py-6 md:px-12">
       <div className="mx-auto max-w-7xl">
         <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-zinc-500">
           {tr("findingsLabel")}

@@ -1,8 +1,27 @@
 @import "tailwindcss";
 
+/* ── Palette: warm editorial dark ──────────────────────────────────────────
+   Inspired by FT / Bloomberg print edition — not neon, not AI
+   Background is warm dark gray, accent is muted bronze/honey
+   ──────────────────────────────────────────────────────────────────────── */
+
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --background:    #1c1b19;
+  --foreground:    #e6dfd3;
+
+  /* Remap Tailwind amber to muted bronze/honey */
+  --color-amber-50:  #fdf6ec;
+  --color-amber-100: #f8e8cc;
+  --color-amber-200: #f0cc94;
+  --color-amber-300: #e0aa5a;
+  --color-amber-400: #c98e3a;   /* was neon yellow — now warm honey */
+  --color-amber-500: #b8742a;   /* primary accent */
+  --color-amber-600: #9a5e1e;
+
+  /* Remap zinc to warmer grays */
+  --color-zinc-800: #2e2b27;
+  --color-zinc-900: #201e1b;
+  --color-zinc-950: #161512;
 }
 
 @theme inline {
@@ -10,6 +29,18 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-amber-50:  var(--color-amber-50);
+  --color-amber-100: var(--color-amber-100);
+  --color-amber-200: var(--color-amber-200);
+  --color-amber-300: var(--color-amber-300);
+  --color-amber-400: var(--color-amber-400);
+  --color-amber-500: var(--color-amber-500);
+  --color-amber-600: var(--color-amber-600);
+
+  --color-zinc-800:  var(--color-zinc-800);
+  --color-zinc-900:  var(--color-zinc-900);
+  --color-zinc-950:  var(--color-zinc-950);
 }
 
 body {
@@ -18,26 +49,24 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
-/* Range slider thumb styling */
+/* Range slider */
 input[type="range"] {
   height: 4px;
   border-radius: 9999px;
-  background: #3f3f46;
+  background: #3a3632;
   outline: none;
   cursor: pointer;
 }
-
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 16px;
   height: 16px;
   border-radius: 9999px;
-  background: #f59e0b;
+  background: var(--color-amber-500);
   cursor: pointer;
-  border: 2px solid #0a0a0a;
+  border: 2px solid var(--background);
 }
 
-/* Smooth transitions for loading states */
 * {
   transition-property: opacity;
   transition-duration: 150ms;

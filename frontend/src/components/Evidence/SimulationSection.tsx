@@ -15,7 +15,7 @@ type SimTab = "causal" | "abm" | "optimize";
 const CHART_STYLE = {
   grid: "#27272a",
   tick: "#71717a",
-  tooltip: { background: "#18181b", border: "1px solid #3f3f46", borderRadius: 6, fontSize: 11 },
+  tooltip: { background: "#242220", border: "1px solid #403c37", borderRadius: 6, fontSize: 11 },
   label: { fill: "#52525b", fontSize: 10 },
 };
 
