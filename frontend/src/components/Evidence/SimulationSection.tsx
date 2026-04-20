@@ -1,31 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
-import { fetchStatDefence } from "@/lib/api";
+import {
+  AreaChart, Area, LineChart, Line,
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  ReferenceLine, ResponsiveContainer,
+} from "recharts";
 import { useLang } from "@/components/LanguageProvider";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-
-const AreaChart = dynamic(
-  () => import("recharts").then((m) => ({ default: m.AreaChart })),
-  { ssr: false }
-);
-const Area = dynamic(() => import("recharts").then((m) => ({ default: m.Area })), { ssr: false });
-const LineChart = dynamic(() => import("recharts").then((m) => ({ default: m.LineChart })), { ssr: false });
-const Line = dynamic(() => import("recharts").then((m) => ({ default: m.Line })), { ssr: false });
-const BarChart = dynamic(() => import("recharts").then((m) => ({ default: m.BarChart })), { ssr: false });
-const Bar = dynamic(() => import("recharts").then((m) => ({ default: m.Bar })), { ssr: false });
-const XAxis = dynamic(() => import("recharts").then((m) => ({ default: m.XAxis })), { ssr: false });
-const YAxis = dynamic(() => import("recharts").then((m) => ({ default: m.YAxis })), { ssr: false });
-const CartesianGrid = dynamic(() => import("recharts").then((m) => ({ default: m.CartesianGrid })), { ssr: false });
-const Tooltip = dynamic(() => import("recharts").then((m) => ({ default: m.Tooltip })), { ssr: false });
-const Legend = dynamic(() => import("recharts").then((m) => ({ default: m.Legend })), { ssr: false });
-const ReferenceLine = dynamic(() => import("recharts").then((m) => ({ default: m.ReferenceLine })), { ssr: false });
-const ResponsiveContainer = dynamic(
-  () => import("recharts").then((m) => ({ default: m.ResponsiveContainer })),
-  { ssr: false }
-);
 
 type SimTab = "causal" | "abm" | "optimize";
 

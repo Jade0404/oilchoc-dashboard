@@ -6,24 +6,24 @@ const t = {
     eyebrow: "Earth Engineering Hackathon · Policy Dashboard",
     title: "The Subsidy Volatility Paradox",
     subtitle:
-      "Regulated fuel markets suppress prices — but create 14× higher kurtosis and 2.3× greater shock probability when corrections occur.",
+      "Regulated fuel markets suppress prices — but create 1.94× higher shock rates when corrections occur (Mann-Whitney U p=0.0014, Bootstrap CI [1.47×, 2.33×]).",
     toggleLang: "ภาษาไทย",
 
     // Key findings
     findingsLabel: "Key Findings",
-    stat1Value: "14×",
-    stat1Label: "Higher kurtosis in regulated markets",
-    stat2Value: "2.3×",
-    stat2Label: "Greater median shock probability",
-    stat3Value: "p = 0.004",
-    stat3Label: "Mann-Whitney U significance",
-    stat4Value: "155",
+    stat1Value: "1.94×",
+    stat1Label: "Higher shock rate: regulated vs deregulated",
+    stat2Value: "p = 0.0014",
+    stat2Label: "Mann-Whitney U · KS p = 0.0001",
+    stat3Value: "[1.47×, 2.33×]",
+    stat3Label: "Bootstrap 95% CI — excludes 1.0",
+    stat4Value: "207",
     stat4Label: "Countries · 113 months of data",
 
     // Thailand badge
     caseStudy: "Case Study: Thailand",
     thaiShocks: "4 shock events in 113 months",
-    thaiPercentile: "63rd percentile of regulated economies",
+    thaiPercentile: "54th percentile of regulated economies",
 
     // Stress Tester
     toolATitle: "Policy Stress Tester",
@@ -74,18 +74,18 @@ const t = {
     toggleLang: "English",
 
     findingsLabel: "ผลการวิจัยหลัก",
-    stat1Value: "14×",
-    stat1Label: "ความเบ้สูงกว่าในตลาดควบคุม",
-    stat2Value: "2.3×",
-    stat2Label: "ความน่าจะเป็นของราคากระชากสูงกว่า",
-    stat3Value: "p = 0.004",
-    stat3Label: "ระดับนัยสำคัญ Mann-Whitney U",
-    stat4Value: "155",
+    stat1Value: "1.94×",
+    stat1Label: "อัตราราคากระชาก: ตลาดควบคุม vs เสรี",
+    stat2Value: "p = 0.0014",
+    stat2Label: "Mann-Whitney U · KS p = 0.0001",
+    stat3Value: "[1.47×, 2.33×]",
+    stat3Label: "Bootstrap 95% CI — ไม่รวม 1.0",
+    stat4Value: "207",
     stat4Label: "ประเทศ · ข้อมูล 113 เดือน",
 
     caseStudy: "กรณีศึกษา: ประเทศไทย",
     thaiShocks: "4 เหตุการณ์ราคากระชากใน 113 เดือน",
-    thaiPercentile: "เปอร์เซ็นไทล์ที่ 63 ของเศรษฐกิจควบคุมราคา",
+    thaiPercentile: "เปอร์เซ็นไทล์ที่ 54 ของเศรษฐกิจควบคุมราคา",
 
     toolATitle: "เครื่องทดสอบความเครียดนโยบาย",
     toolADesc:
