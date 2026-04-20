@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers.stress_tester import router as stress_router
 from routers.reform_optimizer import router as reform_router
 from routers.evidence import router as evidence_router
+from routers.simulation import router as simulation_router
 
 app = FastAPI(
     title="Subsidy Volatility Paradox API",
@@ -25,6 +26,7 @@ app.add_middleware(
 app.include_router(stress_router)
 app.include_router(reform_router)
 app.include_router(evidence_router)
+app.include_router(simulation_router)
 
 
 @app.get("/api/thailand-stats")
