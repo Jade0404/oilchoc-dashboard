@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env
+
+# Node
+frontend/node_modules/
+frontend/.next/
+frontend/.env.local
+
+# Data (keep in repo — small files)
+# data/
+
+# Claude
+.claude/
