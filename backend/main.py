@@ -71,6 +71,25 @@ def thailand_stats():
     }
 
 
+@app.get("/")
+def root():
+    return {
+        "name": "Subsidy Volatility Paradox API",
+        "version": "2.0.0",
+        "docs": "/docs",
+        "health": "/health",
+        "endpoints": [
+            "/api/evidence/summary",
+            "/api/evidence/statistical-defence",
+            "/api/stress-test",
+            "/api/reform-optimize",
+            "/api/simulation/causal",
+            "/api/simulation/abm",
+            "/api/simulation/optimize",
+        ],
+    }
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
