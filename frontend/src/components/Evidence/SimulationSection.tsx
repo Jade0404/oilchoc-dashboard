@@ -19,11 +19,20 @@ const CHART_STYLE = {
   label: { fill: "#52525b", fontSize: 10 },
 };
 
+const Q_KEYS = [
+  { key: "q1", label: "Q1 (Bottom 20%)", fullKey: "Q1 (Bottom 20%)" },
+  { key: "q2", label: "Q2",              fullKey: "Q2" },
+  { key: "q3", label: "Q3 (Middle)",     fullKey: "Q3 (Middle)" },
+  { key: "q4", label: "Q4",              fullKey: "Q4" },
+  { key: "q5", label: "Q5 (Top 20%)",    fullKey: "Q5 (Top 20%)" },
+];
+
 export default function SimulationSection() {
   const { lang } = useLang();
   const [tab, setTab] = useState<SimTab>("causal");
   const [causal, setCausal] = useState<any>(null);
   const [abm, setAbm] = useState<any>(null);
+  const [abmChartData, setAbmChartData] = useState<any[]>([]);
   const [opt, setOpt] = useState<any>(null);
   const [abmSubsidy, setAbmSubsidy] = useState(30);
   const [optPriority, setOptPriority] = useState<"balanced" | "equity" | "fiscal">("balanced");
@@ -46,7 +55,18 @@ export default function SimulationSection() {
       body: JSON.stringify({ subsidy_level_pct: abmSubsidy, n_months: 60 }),
     })
       .then((r) => r.json())
-      .then(setAbm)
+      .then((data) => {
+        setAbm(data);
+        // Pre-process for recharts: flatten quintile data into named fields
+        const chart = (data.monthly_series || []).map((m: any) => {
+          const row: Record<string, any> = { month: m.month, shock_hit: m.shock_hit };
+          Q_KEYS.forEach(({ key, fullKey }) => {
+            row[key] = m.by_quintile?.[fullKey]?.critical_pct ?? 0;
+          });
+          return row;
+        });
+        setAbmChartData(chart);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [abmSubsidy]);
@@ -211,31 +231,12 @@ export default function SimulationSection() {
               )}
             </div>
 
-            {abm && !loading && (() => {
-              // Pre-process: flatten quintile data into named fields for recharts string dataKey
-              const Q_KEYS = [
-                { key: "q1", label: "Q1 (Bottom 20%)", fullKey: "Q1 (Bottom 20%)" },
-                { key: "q2", label: "Q2",              fullKey: "Q2" },
-                { key: "q3", label: "Q3 (Middle)",     fullKey: "Q3 (Middle)" },
-                { key: "q4", label: "Q4",              fullKey: "Q4" },
-                { key: "q5", label: "Q5 (Top 20%)",    fullKey: "Q5 (Top 20%)" },
-              ];
-              const chartData = abm.monthly_series.map((m: any) => ({
-                month: m.month,
-                shock_hit: m.shock_hit,
-                ...Object.fromEntries(
-                  Q_KEYS.map(({ key, fullKey }) => [
-                    key,
-                    m.by_quintile[fullKey]?.critical_pct ?? 0,
-                  ])
-                ),
-              }));
-              return (
+            {abm && !loading && (
               <>
                 <div className="h-64">
                   <p className="mb-2 text-xs text-zinc-500">% of agents in critical state (energy poverty) by month</p>
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={chartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                    <AreaChart data={abmChartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                       <defs>
                         <linearGradient id="gradQ1" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%"  stopColor="#ef4444" stopOpacity={0.4} />
@@ -247,17 +248,17 @@ export default function SimulationSection() {
                       <YAxis tick={{ fill: CHART_STYLE.tick, fontSize: 10 }} tickLine={false} axisLine={false} width={32}
                         tickFormatter={(v) => `${v}%`} />
                       <Tooltip contentStyle={CHART_STYLE.tooltip}
-                        formatter={(v: number, name: string) => [`${v.toFixed(1)}%`, name]}
+                        formatter={(v: number, name: string) => [`${(v as number).toFixed(1)}%`, name]}
                         labelFormatter={(l) => `Month ${l}`} />
                       <Legend wrapperStyle={{ fontSize: 10 }} />
-                      {chartData.map((m: any) =>
+                      {abmChartData.map((m) =>
                         m.shock_hit ? <ReferenceLine key={`shock-${m.month}`} x={m.month} stroke="#b8742a" strokeOpacity={0.5} /> : null
                       )}
                       {Q_KEYS.map(({ key, label, fullKey }) => (
                         <Area key={key} type="monotone"
                           dataKey={key}
                           name={label}
-                          stroke={abm.quintile_colors[fullKey]}
+                          stroke={abm.quintile_colors?.[fullKey] ?? "#888"}
                           fill={key === "q1" ? "url(#gradQ1)" : "none"}
                           strokeWidth={key === "q1" ? 2.5 : 1.5}
                           dot={false}
@@ -272,8 +273,7 @@ export default function SimulationSection() {
                   Calibrated from NESDC income distribution (Gini=0.417) · {abm.model_note?.slice(0,80)}...
                 </p>
               </>
-              );
-            })()}
+            )}
             {loading && <div className="h-64 flex items-center justify-center text-xs text-zinc-500 animate-pulse">Running simulation...</div>}
           </div>
         )}
