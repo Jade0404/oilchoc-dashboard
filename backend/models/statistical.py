@@ -6,7 +6,7 @@ Empirical results (from country_vol.csv, 116 regulated / 91 deregulated countrie
   - Regulated  median monthly shock rate : 5.24%
   - Deregulated median monthly shock rate: 2.70%
   - Observed ratio : 1.94×
-  - Thailand gasoline: 5.45%  → 54th percentile of regulated economies
+  - Thailand gasoline: 5.26%  → 55th percentile of regulated economies (typical, not outlier)
 
 Kurtosis (time-series price changes, 7-country subset):
   - Malaysia (regulated):  29.51   Thailand: 3.55   Indonesia: 3.42
@@ -32,14 +32,14 @@ MANN_WHITNEY_U           = 6566
 MANN_WHITNEY_P           = 0.0013
 
 # Thailand reference (gasoline, from country_vol.csv)
-THAILAND_SHOCK_RATE      = 0.0545   # 5.45%  gasoline
-THAILAND_PERCENTILE      = 54       # 54th percentile of regulated
+THAILAND_SHOCK_RATE      = 0.0526   # 5.26% gasoline (actual from data)
+THAILAND_PERCENTILE      = 55       # 55th percentile of regulated (typical economy, not outlier)
 OBSERVATION_MONTHS       = 113      # Dec 2015 – Apr 2025
 
-# NESDC income inequality (Table 1.8, year 2566 = 2023)
-GINI_COEFFICIENT         = 0.417
-INCOME_RATIO_TOP_BOTTOM  = 8.13     # top 20% / bottom 20%
-POVERTY_RATE_PCT         = 3.41     # % population below poverty line (2566)
+# NESDC income inequality (Table 1.8, latest available)
+GINI_COEFFICIENT         = 0.417    # Year 2566 (2023)
+INCOME_RATIO_TOP_BOTTOM  = 8.13     # top 20% / bottom 20%, Year 2566
+POVERTY_RATE_PCT         = 4.89     # % population below poverty line, Year 2567 (2024)
 
 # Fuel expenditure shares (DOEB-calibrated, fraction of monthly income)
 INCOME_FUEL_SHARE = {"low": 0.148, "middle": 0.088, "high": 0.039}

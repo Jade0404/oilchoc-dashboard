@@ -23,7 +23,7 @@ const t = {
     // Thailand badge
     caseStudy: "Case Study: Thailand",
     thaiShocks: "4 shock events in 113 months",
-    thaiPercentile: "54th percentile of regulated economies",
+    thaiPercentile: "55th percentile of regulated economies — typical, not outlier",
 
     // Stress Tester
     toolATitle: "Policy Stress Tester",
@@ -88,7 +88,7 @@ const t = {
     // ── กรณีศึกษาไทย ────────────────────────────────────────────────────────
     caseStudy: "กรณีศึกษา: ประเทศไทย",
     thaiShocks: "พบการกระชากราคา 4 ครั้ง ในช่วง 113 เดือน",
-    thaiPercentile: "อยู่ที่เปอร์เซนต์ไทล์ที่ 54 ของเศรษฐกิจที่มีการกำกับดูแลราคา",
+    thaiPercentile: "อยู่ที่เปอร์เซนต์ไทล์ที่ 55 ของเศรษฐกิจที่มีการกำกับดูแลราคา — เศรษฐกิจทั่วไป ไม่ใช่ case สุดขั้ว",
 
     // ── เครื่องมือ A ─────────────────────────────────────────────────────────
     toolATitle: "เครื่องมือจำลองความเสี่ยงเชิงนโยบาย",
