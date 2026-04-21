@@ -90,7 +90,7 @@ export default function StatDefencePanel({ data }: { data: StatDefence }) {
               </div>
               <div>
                 <p className="text-zinc-500">Effect size r</p>
-                <p className="font-mono font-bold text-zinc-300">{mw.result["effect_size_r"]} ({mw.result["effect_label"] as string})</p>
+                <p className="font-mono font-bold text-zinc-300">{String(mw.result["effect_size_r"])} ({String(mw.result["effect_label"])})</p>
               </div>
             </div>
           }
@@ -107,7 +107,7 @@ export default function StatDefencePanel({ data }: { data: StatDefence }) {
           extra={
             <div className="mb-2 rounded bg-zinc-800/50 p-2 text-xs">
               <p className="text-zinc-500">Two-sided p-value</p>
-              <p className="font-mono font-bold text-white">{ks.result["p_value_twosided"] as number}</p>
+              <p className="font-mono font-bold text-white">{String(ks.result["p_value_twosided"])}</p>
               <p className="mt-1 text-zinc-500">
                 Tests distributional shape — not just location shift.
                 Complements Mann-Whitney.
