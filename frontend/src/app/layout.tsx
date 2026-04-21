@@ -1,16 +1,30 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Sans, IBM_Plex_Sans_Thai, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/components/LanguageProvider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// English body font — humanist, editorial, not too heavy
+const dmSans = DM_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Thai body font — designed for Thai script, pairs naturally with DM Sans
+const ibmPlexThai = IBM_Plex_Sans_Thai({
+  variable: "--font-thai",
+  subsets: ["thai"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
+// Monospace for stats/numbers
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -28,7 +42,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${ibmPlexThai.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-[#1c1b19] text-[#e6dfd3]">
         <LanguageProvider>{children}</LanguageProvider>

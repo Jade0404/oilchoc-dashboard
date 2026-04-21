@@ -74,8 +74,8 @@ export default function SimulationSection() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-6">
           <div className="mb-2 flex items-center gap-2">
-            <div className="h-1 w-8 bg-amber-500" />
-            <p className="text-xs font-semibold uppercase tracking-widest text-amber-500">
+            <div className="h-1 w-8 bg-teal-500" />
+            <p className="text-xs font-semibold uppercase tracking-widest text-teal-400">
               {lang === "th" ? "การจำลองและการอนุมาน" : "Simulation & Inference"}
             </p>
           </div>
@@ -96,7 +96,7 @@ export default function SimulationSection() {
               key={t.key}
               onClick={() => setTab(t.key)}
               className={`rounded px-4 py-1.5 text-xs font-medium transition ${
-                tab === t.key ? "bg-amber-500 text-black" : "text-zinc-400 hover:text-white"
+                tab === t.key ? "bg-teal-500 text-black" : "text-zinc-400 hover:text-white"
               }`}
             >
               {lang === "th" ? t.th : t.en}
@@ -117,13 +117,13 @@ export default function SimulationSection() {
                   </p>
                 </div>
                 <span className={`rounded px-2 py-0.5 text-xs font-bold ${
-                  causal.ols.result.significant ? "bg-emerald-500 text-black" : "bg-zinc-700 text-zinc-300"
+                  causal.ols.result.significant ? "bg-teal-500 text-black" : "bg-zinc-700 text-zinc-300"
                 }`}>
                   p = {causal.ols.result.p_value}
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-3 rounded bg-zinc-800/50 p-3 text-xs md:grid-cols-4">
-                <Stat label="β regulated" value={`${causal.ols.result.beta_regulated}pp`} color="text-amber-400" />
+                <Stat label="β regulated" value={`${causal.ols.result.beta_regulated}pp`} color="text-teal-300" />
                 <Stat label="SE (HC1)" value={`${causal.ols.result.se_robust}pp`} />
                 <Stat label="R²" value={causal.ols.result.r_squared} />
                 <Stat label="N countries" value={causal.ols.result.n_total} />
@@ -144,13 +144,13 @@ export default function SimulationSection() {
                     Natural experiment: COVID-19 oil shock · Mar 2020
                   </p>
                 </div>
-                <span className="rounded bg-amber-500/20 border border-amber-500/40 px-2 py-0.5 text-xs font-bold text-amber-400">
+                <span className="rounded bg-teal-500/20 border border-teal-500/40 px-2 py-0.5 text-xs font-bold text-teal-300">
                   DiD = +{causal.did.result.did_estimate_pp}pp
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-3 rounded bg-zinc-800/50 p-3 text-xs md:grid-cols-4 mb-4">
-                <Stat label="Treated pre" value={`${causal.did.result.treated_pre_pct}%`} color="text-amber-400" />
-                <Stat label="Treated post" value={`${causal.did.result.treated_post_pct}%`} color="text-amber-400" />
+                <Stat label="Treated pre" value={`${causal.did.result.treated_pre_pct}%`} color="text-teal-300" />
+                <Stat label="Treated post" value={`${causal.did.result.treated_post_pct}%`} color="text-teal-300" />
                 <Stat label="Control pre" value={`${causal.did.result.control_pre_pct}%`} color="text-blue-400" />
                 <Stat label="Control post" value={`${causal.did.result.control_post_pct}%`} color="text-blue-400" />
               </div>
@@ -187,11 +187,11 @@ export default function SimulationSection() {
               <div className="min-w-48 flex-1">
                 <label className="mb-2 flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-zinc-400">
                   <span>Subsidy Level</span>
-                  <span className="text-lg font-bold text-amber-400">{abmSubsidy}%</span>
+                  <span className="text-lg font-bold text-teal-300">{abmSubsidy}%</span>
                 </label>
                 <input type="range" min={0} max={80} step={10} value={abmSubsidy}
                   onChange={(e) => setAbmSubsidy(Number(e.target.value))}
-                  className="w-full accent-amber-500" />
+                  className="w-full accent-teal-500" />
               </div>
               {abm && (
                 <div className="flex gap-4 text-xs">
@@ -199,8 +199,8 @@ export default function SimulationSection() {
                     <p className="text-red-400 font-bold text-lg">{abm.summary.peak_critical_pct}%</p>
                     <p className="text-zinc-400">Peak critical</p>
                   </div>
-                  <div className="rounded border border-amber-500/30 bg-amber-500/10 px-3 py-2">
-                    <p className="text-amber-400 font-bold text-lg">{abm.summary.q1_avg_critical_pct}%</p>
+                  <div className="rounded border border-teal-500/30 bg-teal-500/10 px-3 py-2">
+                    <p className="text-teal-300 font-bold text-lg">{abm.summary.q1_avg_critical_pct}%</p>
                     <p className="text-zinc-400">Q1 avg critical</p>
                   </div>
                   <div className="rounded border border-blue-500/30 bg-blue-500/10 px-3 py-2">
@@ -268,7 +268,7 @@ export default function SimulationSection() {
               {(["balanced", "equity", "fiscal"] as const).map((p) => (
                 <button key={p} onClick={() => setOptPriority(p)}
                   className={`rounded px-3 py-1.5 text-xs font-medium capitalize transition ${
-                    optPriority === p ? "bg-amber-500 text-black" : "border border-zinc-700 text-zinc-400 hover:text-white"
+                    optPriority === p ? "bg-teal-500 text-black" : "border border-zinc-700 text-zinc-400 hover:text-white"
                   }`}>
                   {p}
                 </button>
@@ -279,8 +279,8 @@ export default function SimulationSection() {
             {opt && (
               <>
                 <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-                  <OptCard label="Optimal Duration" value={`${opt.optimal_solution.duration_months}m`} color="text-amber-400" />
-                  <OptCard label="Cash Transfer" value={`${Math.round(opt.optimal_solution.cash_transfer_fraction * 100)}%`} color="text-emerald-400" />
+                  <OptCard label="Optimal Duration" value={`${opt.optimal_solution.duration_months}m`} color="text-teal-300" />
+                  <OptCard label="Cash Transfer" value={`${Math.round(opt.optimal_solution.cash_transfer_fraction * 100)}%`} color="text-teal-400" />
                   <OptCard label="Targeting Accuracy" value={`${Math.round(opt.optimal_solution.targeting_accuracy * 100)}%`} color="text-blue-400" />
                   <OptCard label="Welfare Loss" value={opt.optimal_solution.welfare_loss_value.toFixed(4)} color="text-zinc-300" />
                 </div>
@@ -292,13 +292,13 @@ export default function SimulationSection() {
                       <div key={name} className="flex items-center gap-3">
                         <span className="w-32 text-xs text-zinc-300 capitalize">{name.replace("_", " ")}</span>
                         <div className="flex-1 h-2 rounded bg-zinc-800">
-                          <div className="h-2 rounded bg-amber-500/60 transition-all"
+                          <div className="h-2 rounded bg-teal-500/60 transition-all"
                             style={{ width: `${Math.min(100, d.welfare_loss * 1000)}%` }} />
                         </div>
                         <span className="w-20 text-right text-xs font-mono text-zinc-400">
                           loss={d.welfare_loss.toFixed(4)}
                         </span>
-                        <span className={`text-xs font-mono ${d.improvement_vs_optimal_pct > 0 ? "text-red-400" : "text-emerald-400"}`}>
+                        <span className={`text-xs font-mono ${d.improvement_vs_optimal_pct > 0 ? "text-red-400" : "text-teal-400"}`}>
                           {d.improvement_vs_optimal_pct > 0 ? `+${d.improvement_vs_optimal_pct}%` : "≈ optimal"}
                         </span>
                       </div>

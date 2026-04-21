@@ -48,8 +48,8 @@ export default function EvidenceSection() {
         <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
           <div>
             <div className="mb-2 flex items-center gap-2">
-              <div className="h-1 w-8 bg-amber-500" />
-              <p className="text-xs font-semibold uppercase tracking-widest text-amber-500">
+              <div className="h-1 w-8 bg-teal-500" />
+              <p className="text-xs font-semibold uppercase tracking-widest text-teal-400">
                 {lang === "th" ? "หลักฐานเชิงประจักษ์" : "Empirical Evidence"}
               </p>
             </div>
@@ -90,7 +90,7 @@ export default function EvidenceSection() {
               onClick={() => setTab(t.key)}
               className={`rounded px-4 py-1.5 text-xs font-medium transition ${
                 tab === t.key
-                  ? "bg-amber-500 text-black"
+                  ? "bg-teal-500 text-black"
                   : "text-zinc-400 hover:text-white"
               }`}
             >
