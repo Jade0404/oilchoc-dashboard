@@ -211,15 +211,31 @@ export default function SimulationSection() {
               )}
             </div>
 
-            {abm && !loading && (
+            {abm && !loading && (() => {
+              // Pre-process: flatten quintile data into named fields for recharts string dataKey
+              const Q_KEYS = [
+                { key: "q1", label: "Q1 (Bottom 20%)", fullKey: "Q1 (Bottom 20%)" },
+                { key: "q2", label: "Q2",              fullKey: "Q2" },
+                { key: "q3", label: "Q3 (Middle)",     fullKey: "Q3 (Middle)" },
+                { key: "q4", label: "Q4",              fullKey: "Q4" },
+                { key: "q5", label: "Q5 (Top 20%)",    fullKey: "Q5 (Top 20%)" },
+              ];
+              const chartData = abm.monthly_series.map((m: any) => ({
+                month: m.month,
+                shock_hit: m.shock_hit,
+                ...Object.fromEntries(
+                  Q_KEYS.map(({ key, fullKey }) => [
+                    key,
+                    m.by_quintile[fullKey]?.critical_pct ?? 0,
+                  ])
+                ),
+              }));
+              return (
               <>
                 <div className="h-64">
                   <p className="mb-2 text-xs text-zinc-500">% of agents in critical state (energy poverty) by month</p>
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart
-                      data={abm.monthly_series}
-                      margin={{ top: 4, right: 8, left: 0, bottom: 0 }}
-                    >
+                    <AreaChart data={chartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                       <defs>
                         <linearGradient id="gradQ1" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%"  stopColor="#ef4444" stopOpacity={0.4} />
@@ -231,19 +247,19 @@ export default function SimulationSection() {
                       <YAxis tick={{ fill: CHART_STYLE.tick, fontSize: 10 }} tickLine={false} axisLine={false} width={32}
                         tickFormatter={(v) => `${v}%`} />
                       <Tooltip contentStyle={CHART_STYLE.tooltip}
-                        formatter={(v: number, name: string) => [`${v}%`, name]}
+                        formatter={(v: number, name: string) => [`${v.toFixed(1)}%`, name]}
                         labelFormatter={(l) => `Month ${l}`} />
                       <Legend wrapperStyle={{ fontSize: 10 }} />
-                      {abm.monthly_series.map((m: any) =>
-                        m.shock_hit ? <ReferenceLine key={m.month} x={m.month} stroke="#f59e0b" strokeOpacity={0.4} /> : null
+                      {chartData.map((m: any) =>
+                        m.shock_hit ? <ReferenceLine key={`shock-${m.month}`} x={m.month} stroke="#b8742a" strokeOpacity={0.5} /> : null
                       )}
-                      {["Q1 (Bottom 20%)", "Q2", "Q3 (Middle)", "Q4", "Q5 (Top 20%)"].map((q) => (
-                        <Area key={q} type="monotone"
-                          dataKey={(d: any) => d.by_quintile[q]?.critical_pct ?? 0}
-                          name={q}
-                          stroke={abm.quintile_colors[q]}
-                          fill={q === "Q1 (Bottom 20%)" ? "url(#gradQ1)" : "none"}
-                          strokeWidth={q === "Q1 (Bottom 20%)" ? 2.5 : 1.5}
+                      {Q_KEYS.map(({ key, label, fullKey }) => (
+                        <Area key={key} type="monotone"
+                          dataKey={key}
+                          name={label}
+                          stroke={abm.quintile_colors[fullKey]}
+                          fill={key === "q1" ? "url(#gradQ1)" : "none"}
+                          strokeWidth={key === "q1" ? 2.5 : 1.5}
                           dot={false}
                           fillOpacity={1}
                         />
@@ -256,7 +272,8 @@ export default function SimulationSection() {
                   Calibrated from NESDC income distribution (Gini=0.417) · {abm.model_note?.slice(0,80)}...
                 </p>
               </>
-            )}
+              );
+            })()}
             {loading && <div className="h-64 flex items-center justify-center text-xs text-zinc-500 animate-pulse">Running simulation...</div>}
           </div>
         )}
