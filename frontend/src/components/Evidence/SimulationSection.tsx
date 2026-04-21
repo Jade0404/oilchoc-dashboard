@@ -58,10 +58,12 @@ export default function SimulationSection() {
       .then((data) => {
         setAbm(data);
         // Pre-process for recharts: flatten quintile data into named fields
+        // Use avg_fuel_share_pct (fuel burden % of income) — shows clear inequality
+        // Q1 spikes to ~18% during shocks while Q5 stays ~5%, all 5 lines visible
         const chart = (data.monthly_series || []).map((m: any) => {
           const row: Record<string, any> = { month: m.month, shock_hit: m.shock_hit };
           Q_KEYS.forEach(({ key, fullKey }) => {
-            row[key] = m.by_quintile?.[fullKey]?.critical_pct ?? 0;
+            row[key] = m.by_quintile?.[fullKey]?.avg_fuel_share_pct ?? 0;
           });
           return row;
         });
@@ -234,9 +236,9 @@ export default function SimulationSection() {
             {abm && !loading && (
               <>
                 <div className="h-64">
-                  <p className="mb-2 text-xs text-zinc-500">% of agents in critical state (energy poverty) by month</p>
+                  <p className="mb-2 text-xs text-zinc-500">Fuel expenditure as % of monthly income — Q1 carries the heaviest burden during shocks</p>
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={abmChartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                    <AreaChart key={`abm-${abmSubsidy}`} data={abmChartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                       <defs>
                         <linearGradient id="gradQ1" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%"  stopColor="#ef4444" stopOpacity={0.4} />
@@ -326,7 +328,7 @@ export default function SimulationSection() {
                 {opt.optimal_timeline && (
                   <div className="h-48">
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={opt.optimal_timeline} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                      <LineChart key={`opt-${optPriority}`} data={opt.optimal_timeline} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke={CHART_STYLE.grid} />
                         <XAxis dataKey="month" tick={{ fill: CHART_STYLE.tick, fontSize: 10 }} tickLine={false} />
                         <YAxis tick={{ fill: CHART_STYLE.tick, fontSize: 10 }} tickLine={false} axisLine={false} width={36} />
