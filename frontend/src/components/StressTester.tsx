@@ -24,22 +24,27 @@ const LINE_COLORS = {
 };
 
 const INITIAL_DATA: StressTestResponse = {
-  monthly_shock_prob: 5.41,
-  annual_shock_prob: 48.5,
-  kurtosis_factor: 14,
+  monthly_shock_prob: 5.45,
+  annual_shock_prob: 48.1,
   by_income_group: {
-    low: { shock_prob: 0.0813, monthly_cost_impact_usd: 12.5, fuel_expenditure_share: 0.15 },
-    middle: { shock_prob: 0.0541, monthly_cost_impact_usd: 8.3, fuel_expenditure_share: 0.09 },
-    high: { shock_prob: 0.0271, monthly_cost_impact_usd: 5.1, fuel_expenditure_share: 0.04 },
+    low:    { shock_prob: 0.0954, monthly_cost_impact_usd: 2.99,  monthly_cost_impact_thb: 100, fuel_expenditure_share: 0.148, income_label_en: "Bottom 40%" },
+    middle: { shock_prob: 0.0545, monthly_cost_impact_usd: 2.72,  monthly_cost_impact_thb: 91,  fuel_expenditure_share: 0.088, income_label_en: "Middle 40%" },
+    high:   { shock_prob: 0.0300, monthly_cost_impact_usd: 2.97,  monthly_cost_impact_thb: 99,  fuel_expenditure_share: 0.039, income_label_en: "Top 20%" },
   },
   sweep_curve: Array.from({ length: 21 }, (_, i) => ({
     subsidy_pct: i * 5,
-    overall: 3 + i * 0.6,
-    low: 4.5 + i * 0.9,
-    middle: 3 + i * 0.6,
-    high: 1.5 + i * 0.3,
+    overall: 2.1 + i * 0.5,
+    low:    3.8 + i * 0.8,
+    middle: 2.1 + i * 0.5,
+    high:   1.2 + i * 0.3,
   })),
-  thailand_reference: { shocks: 4, months: 113, monthly_rate: 3.54, percentile_regulated: 63 },
+  thailand_reference: {
+    monthly_shock_rate_pct:  5.45,
+    observation_months:      77,
+    percentile_of_regulated: 54,
+    shock_ratio_observed:    1.94,
+    mann_whitney_p:          0.0014,
+  },
 };
 
 export default function StressTester() {
