@@ -9,7 +9,7 @@ import statistics
 from pathlib import Path
 from functools import lru_cache
 
-DATA_DIR = Path(__file__).parent.parent / "data"
+DATA_DIR = Path(__file__).parent / "data"
 
 
 def _clean_num(v: str) -> float | None:
