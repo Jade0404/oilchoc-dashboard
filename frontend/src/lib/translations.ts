@@ -6,14 +6,14 @@ const t = {
     eyebrow: "Earth Engineering Hackathon · Policy Dashboard",
     title: "The Subsidy Volatility Paradox",
     subtitle:
-      "Regulated fuel markets suppress prices — but create 1.94× higher shock rates when corrections occur (Mann-Whitney U p=0.0014, Bootstrap CI [1.47×, 2.33×]).",
+      "Regulated fuel markets suppress prices — but create 1.94× higher shock rates when corrections occur (Mann-Whitney U p=0.0013, Bootstrap CI [1.47×, 2.33×]).",
     toggleLang: "ภาษาไทย",
 
     // Key findings
     findingsLabel: "Key Findings",
     stat1Value: "1.94×",
     stat1Label: "Higher shock rate: regulated vs deregulated",
-    stat2Value: "p = 0.0014",
+    stat2Value: "p = 0.0013",
     stat2Label: "Mann-Whitney U · KS p = 0.0001",
     stat3Value: "[1.47×, 2.33×]",
     stat3Label: "Bootstrap 95% CI — excludes 1.0",
@@ -78,7 +78,7 @@ const t = {
     findingsLabel: "ผลการวิจัยสำคัญ",
     stat1Value: "1.94×",
     stat1Label: "อัตราการกระชากราคาในตลาดกำกับดูแลสูงกว่าตลาดเสรี",
-    stat2Value: "p = 0.0014",
+    stat2Value: "p = 0.0013",
     stat2Label: "นัยสำคัญทางสถิติ · Mann-Whitney U · KS p = 0.0001",
     stat3Value: "[1.47×, 2.33×]",
     stat3Label: "ช่วงความเชื่อมั่น 95% Bootstrap — ยืนยันผลอย่างมีนัยสำคัญ",

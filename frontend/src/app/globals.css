@@ -24,6 +24,26 @@
   --color-zinc-950: #161512;
 }
 
+/* Light theme override */
+:root.theme-light {
+  --background:    #FFFFFF;
+  --foreground:    #1A1D23;
+
+  /* Light mode amber (darker/more saturated) */
+  --color-amber-50:  #fffbf0;
+  --color-amber-100: #fde8d9;
+  --color-amber-200: #f9d5a3;
+  --color-amber-300: #f5b854;
+  --color-amber-400: #e8a03a;
+  --color-amber-500: #c98e3a;
+  --color-amber-600: #b8742a;
+
+  /* Light mode zinc (inverted) */
+  --color-zinc-800: #DDE1E7;
+  --color-zinc-900: #F7F8FA;
+  --color-zinc-950: #FAFBFC;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

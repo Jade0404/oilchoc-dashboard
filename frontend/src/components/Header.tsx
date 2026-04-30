@@ -1,10 +1,12 @@
 "use client";
 
 import { useLang } from "./LanguageProvider";
+import { useTheme } from "./ThemeProvider";
 import { useTranslations } from "@/lib/translations";
 
 export default function Header() {
   const { lang, toggle } = useLang();
+  const { theme, toggle: toggleTheme } = useTheme();
   const tr = useTranslations(lang);
 
   return (
@@ -24,14 +26,23 @@ export default function Header() {
             </p>
           </div>
 
-          {/* Right: lang toggle + Thailand badge */}
+          {/* Right: theme + lang toggle + Thailand badge */}
           <div className="flex shrink-0 flex-col items-end gap-3">
-            <button
-              onClick={toggle}
-              className="rounded border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-300 transition hover:border-amber-500 hover:text-amber-400"
-            >
-              {tr("toggleLang")}
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={toggleTheme}
+                className="rounded border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-300 transition hover:border-amber-500 hover:text-amber-400"
+                title={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+              >
+                {theme === "dark" ? "☀️" : "🌙"}
+              </button>
+              <button
+                onClick={toggle}
+                className="rounded border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-300 transition hover:border-amber-500 hover:text-amber-400"
+              >
+                {tr("toggleLang")}
+              </button>
+            </div>
             <div className="rounded border border-amber-500/30 bg-amber-500/10 p-3 text-right">
               <p className="text-xs font-semibold text-amber-400">
                 {tr("caseStudy")}
