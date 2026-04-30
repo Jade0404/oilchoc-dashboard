@@ -113,30 +113,34 @@ export default function ReformRoadmapSection() {
                     }}
                   />
                   <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="fast"
-                    stroke="#C0392B"
-                    name="Fast Cut"
-                    dot={false}
-                    strokeWidth={2}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="gradual"
-                    stroke="#D4860A"
-                    name="Gradual Phase-Out"
-                    dot={false}
-                    strokeWidth={2}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="cashTransfer"
-                    stroke="#1A7A3C"
-                    name="Cash Transfer Switch"
-                    dot={false}
-                    strokeWidth={2}
-                  />
+                  {pricePathData.length > 0 && (
+                    <>
+                      <Line
+                        type="monotone"
+                        dataKey="fast"
+                        stroke="#C0392B"
+                        name="Fast Cut"
+                        dot={false}
+                        strokeWidth={2}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="gradual"
+                        stroke="#D4860A"
+                        name="Gradual Phase-Out"
+                        dot={false}
+                        strokeWidth={2}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="cashTransfer"
+                        stroke="#1A7A3C"
+                        name="Cash Transfer Switch"
+                        dot={false}
+                        strokeWidth={2}
+                      />
+                    </>
+                  )}
                 </LineChart>
               </ResponsiveContainer>
             </div>

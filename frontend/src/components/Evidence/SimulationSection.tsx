@@ -242,19 +242,21 @@ export default function SimulationSection() {
                   />
                 </LineChart>
               </ResponsiveContainer>
-              <div className="mt-6 rounded border border-zinc-700 bg-zinc-900/50 p-4">
-                <p className="text-xs font-semibold text-zinc-300">
-                  Difference-in-Differences Estimate
-                </p>
-                <p className="mt-2 font-mono text-lg font-bold text-teal-400">
-                  DiD: +{causalData.did_estimate_pp.toFixed(2)}pp (95% CI [
-                  {causalData.ci_95[0].toFixed(2)}, {causalData.ci_95[1].toFixed(2)}])
-                </p>
-                <p className="mt-1 text-xs text-zinc-400">
-                  Regulated markets experienced {causalData.did_estimate_pp.toFixed(2)} percentage
-                  points MORE volatility increase during COVID than deregulated markets.
-                </p>
-              </div>
+              {causalData && (
+                <div className="mt-6 rounded border border-zinc-700 bg-zinc-900/50 p-4">
+                  <p className="text-xs font-semibold text-zinc-300">
+                    Difference-in-Differences Estimate
+                  </p>
+                  <p className="mt-2 font-mono text-lg font-bold text-teal-400">
+                    DiD: +{causalData.did_estimate_pp?.toFixed(2) ?? "—"}pp (95% CI [
+                    {causalData.ci_95?.[0]?.toFixed(2) ?? "—"}, {causalData.ci_95?.[1]?.toFixed(2) ?? "—"}])
+                  </p>
+                  <p className="mt-1 text-xs text-zinc-400">
+                    Regulated markets experienced {causalData.did_estimate_pp?.toFixed(2) ?? "—"} percentage
+                    points MORE volatility increase during COVID than deregulated markets.
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
@@ -301,24 +303,26 @@ export default function SimulationSection() {
                 </LineChart>
               </ResponsiveContainer>
 
-              <div className="mt-6 grid grid-cols-2 gap-4">
-                <div className="rounded border border-zinc-700 bg-zinc-900/50 p-4">
-                  <p className="text-xs font-semibold text-zinc-300">
-                    Peak Critical %
-                  </p>
-                  <p className="mt-2 font-mono text-lg font-bold text-teal-400">
-                    {abmData.peak_critical_pct.toFixed(2)}%
-                  </p>
+              {abmData && (
+                <div className="mt-6 grid grid-cols-2 gap-4">
+                  <div className="rounded border border-zinc-700 bg-zinc-900/50 p-4">
+                    <p className="text-xs font-semibold text-zinc-300">
+                      Peak Critical %
+                    </p>
+                    <p className="mt-2 font-mono text-lg font-bold text-teal-400">
+                      {abmData.peak_critical_pct?.toFixed(2) ?? "—"}%
+                    </p>
+                  </div>
+                  <div className="rounded border border-zinc-700 bg-zinc-900/50 p-4">
+                    <p className="text-xs font-semibold text-zinc-300">
+                      Inequality Ratio (Q1/Q5)
+                    </p>
+                    <p className="mt-2 font-mono text-lg font-bold text-teal-400">
+                      {abmData.inequality_ratio?.toFixed(2) ?? "—"}x
+                    </p>
+                  </div>
                 </div>
-                <div className="rounded border border-zinc-700 bg-zinc-900/50 p-4">
-                  <p className="text-xs font-semibold text-zinc-300">
-                    Inequality Ratio (Q1/Q5)
-                  </p>
-                  <p className="mt-2 font-mono text-lg font-bold text-teal-400">
-                    {abmData.inequality_ratio.toFixed(2)}x
-                  </p>
-                </div>
-              </div>
+              )}
             </div>
           )}
 
