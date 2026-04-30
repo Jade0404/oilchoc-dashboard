@@ -34,7 +34,15 @@ export default function Header() {
                 className="rounded border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-300 transition hover:border-amber-500 hover:text-amber-400"
                 title={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
               >
-                {theme === "dark" ? "☀️" : "🌙"}
+                {theme === "dark" ? (
+                  <svg className="h-4 w-4 inline" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2a1 1 0 011 1v2a1 1 0 11-2 0V3a1 1 0 011-1zM4.22 4.22a1 1 0 011.415 0l1.414 1.414a1 1 0 01-1.415 1.415L4.22 5.636a1 1 0 010-1.414zm11.313 0a1 1 0 010 1.414l-1.414 1.414a1 1 0 01-1.415-1.415l1.414-1.414a1 1 0 011.415 0zM10 7a3 3 0 100 6 3 3 0 000-6zm0 2a1 1 0 100 2 1 1 0 000-2zm5.657-5.657a1 1 0 010 1.414l-1.414 1.414a1 1 0 11-1.415-1.415l1.414-1.414a1 1 0 011.415 0zM5.036 15.036a1 1 0 010 1.414l-1.414 1.414a1 1 0 11-1.415-1.415l1.414-1.414a1 1 0 011.415 0zM5 10a1 1 0 100 2H3a1 1 0 100-2h2zm7 0a1 1 0 100 2h2a1 1 0 100-2h-2zm-7 7a1 1 0 011 1v2a1 1 0 11-2 0v-2a1 1 0 011-1zM17 11a1 1 0 100-2h2a1 1 0 100 2h-2z" />
+                  </svg>
+                ) : (
+                  <svg className="h-4 w-4 inline" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                  </svg>
+                )}
               </button>
               <button
                 onClick={toggle}
