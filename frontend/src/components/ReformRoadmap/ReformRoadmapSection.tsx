@@ -19,21 +19,24 @@ import {
 import { useLang } from "../LanguageProvider";
 import { useTranslations } from "@/lib/translations";
 
+// Hardcoded price path data (static simulation, not fetched from API)
 const pricePathData = Array.from({ length: 36 }, (_, i) => {
   const month = i + 1;
-  const progress = month / 36;
   return {
     month,
-    fast: 100 - progress * 50,
-    gradual: 100 - progress * 35,
-    cashTransfer: 100 - progress * 40,
+    // Path A: Fast cut — drops from 100 to 50 in 12 months
+    fast: month <= 12 ? 100 - (month / 12) * 50 : 50,
+    // Path B: Gradual — drops from 100 to 60 in 48 months
+    gradual: Math.max(60, 100 - (month / 48) * 40),
+    // Path C: Cash transfer — drops from 100 to 55 in 24 months
+    cashTransfer: month <= 24 ? 100 - (month / 24) * 45 : 55,
   };
 });
 
 const paretofrontierData = [
-  { x: 7.2, y: 11.5, label: "Path A\n(Fast Cut)", path: "A" },
-  { x: 6.8, y: 8.3, label: "Path B\n(Gradual)", path: "B" },
-  { x: 7.5, y: 7.1, label: "Path C\n(Cash Transfer)", path: "C" },
+  { x: 7.2, y: 11.5, label: "Path A (Fast Cut)", path: "A" },
+  { x: 6.8, y: 8.3, label: "Path B (Gradual)", path: "B" },
+  { x: 7.5, y: 7.1, label: "Path C (Cash Transfer)", path: "C" },
 ];
 
 const policyScoreboardData = [
@@ -170,15 +173,6 @@ export default function ReformRoadmapSection() {
                       border: "1px solid #3a3632",
                     }}
                     cursor={{ strokeDasharray: "3 3" }}
-                    formatter={(value: any, name: string, props: any) => {
-                      if (name === "x") return [value.toFixed(2), "Fiscal Savings Index"];
-                      if (name === "y") return [value.toFixed(2), "Q1 Welfare Burden (%)"];
-                      return value;
-                    }}
-                    labelFormatter={(value) => {
-                      const entry = paretofrontierData.find((d) => d.x === value);
-                      return entry ? entry.label.replace("\n", " ") : "";
-                    }}
                   />
                   <Scatter name="Reform Paths" data={paretofrontierData}>
                     {paretofrontierData.map((entry, index) => {
@@ -198,7 +192,10 @@ export default function ReformRoadmapSection() {
                 </ScatterChart>
               </ResponsiveContainer>
               <div className="mt-4 space-y-1 text-xs text-zinc-400">
-                <p>Path A (Fast Cut): #C0392B | Path B (Gradual): #D4860A | Path C (Cash Transfer): #1A7A3C</p>
+                <p>
+                  Path A (Fast Cut): {paretofrontierData[0].label} | Path B (Gradual): {paretofrontierData[1].label} |
+                  Path C (Cash Transfer): {paretofrontierData[2].label}
+                </p>
                 <p>Path C dominates — lower welfare loss, comparable fiscal savings</p>
               </div>
             </div>

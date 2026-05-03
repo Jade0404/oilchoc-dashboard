@@ -62,23 +62,25 @@ export default function SimulationSection() {
 
   const [causalData, setCausalData] = useState<CausalData | null>(null);
   const [abmData, setABMData] = useState<ABMData | null>(null);
-  const [optimizerData, setOptimizerData] = useState<ReformOptimizerData | null>(
-    null
-  );
+  const [optimizerData, setOptimizerData] = useState<ReformOptimizerData | null>(null);
+
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [subsidyLevel, setSubsidyLevel] = useState(30);
-  const [reformPriority, setReformPriority] = useState<
-    "fiscal" | "balanced" | "equity"
-  >("balanced");
+  const [reformPriority, setReformPriority] = useState<"fiscal" | "balanced" | "equity">("balanced");
 
-  // Load causal data
+  // Load causal data on mount
   useEffect(() => {
     setLoading(true);
+    setError(null);
     fetch(`${BASE_URL}/api/simulation/causal`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then(setCausalData)
-      .catch(() => {})
+      .catch((err) => setError(`Causal: ${err.message}`))
       .finally(() => setLoading(false));
   }, []);
 
@@ -86,6 +88,7 @@ export default function SimulationSection() {
   useEffect(() => {
     if (activeTab !== "abm") return;
     setLoading(true);
+    setError(null);
     fetch(`${BASE_URL}/api/simulation/abm`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -94,9 +97,12 @@ export default function SimulationSection() {
         market_type: "regulated",
       }),
     })
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then(setABMData)
-      .catch(() => {})
+      .catch((err) => setError(`ABM: ${err.message}`))
       .finally(() => setLoading(false));
   }, [subsidyLevel, activeTab]);
 
@@ -104,6 +110,7 @@ export default function SimulationSection() {
   useEffect(() => {
     if (activeTab !== "optimizer") return;
     setLoading(true);
+    setError(null);
     fetch(`${BASE_URL}/api/simulation/optimize`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -112,9 +119,11 @@ export default function SimulationSection() {
         priority: reformPriority,
       }),
     })
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then((data) => {
-        // Transform backend response to match expected format
         const timeline = data.paths?.fast_cut?.timeline || [];
         const transformedData: ReformOptimizerData = {
           optimal_timeline: timeline.map((t: any) => ({
@@ -130,13 +139,12 @@ export default function SimulationSection() {
         };
         setOptimizerData(transformedData);
       })
-      .catch(() => {})
+      .catch((err) => setError(`Optimizer: ${err.message}`))
       .finally(() => setLoading(false));
   }, [reformPriority, activeTab]);
 
   // Prepare causal chart data
   const causalChartData: Array<{ date: string; treated?: number; control?: number }> = [];
-
   if (causalData?.did?.chart) {
     causalData.did.chart.forEach((d) => {
       causalChartData.push({
@@ -191,6 +199,15 @@ export default function SimulationSection() {
           </button>
         </div>
 
+        {/* Error message */}
+        {error && (
+          <div className="mb-6 rounded border border-red-700/50 bg-red-900/20 p-3 text-xs text-red-300">
+            Error: {error}
+            <br />
+            API URL: {BASE_URL}
+          </div>
+        )}
+
         {/* Tab content */}
         <div className="rounded-lg border border-zinc-800 bg-zinc-900/30 p-6">
           {loading && (
@@ -200,47 +217,53 @@ export default function SimulationSection() {
           )}
 
           {/* TAB 1: Causal Inference */}
-          {!loading && activeTab === "causal" && causalData && (
+          {!loading && activeTab === "causal" && (
             <div>
               <h3 className="mb-4 text-sm font-semibold text-zinc-300">
                 Price Volatility: Regulated vs Deregulated (COVID-19 Event)
               </h3>
-              <ResponsiveContainer width="100%" height={350}>
-                <LineChart data={causalChartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#3a3632" />
-                  <XAxis dataKey="date" stroke="#999999" />
-                  <YAxis stroke="#999999" />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#1c1b19",
-                      border: "1px solid #3a3632",
-                    }}
-                  />
-                  <Legend />
-                  <ReferenceLine
-                    x="2020-03"
-                    stroke="#c0392b"
-                    strokeDasharray="5 5"
-                    label="COVID-19"
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="treated"
-                    stroke="#b8742a"
-                    name="Regulated (Treated)"
-                    dot={false}
-                    strokeWidth={2}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="control"
-                    stroke="#3a7ca5"
-                    name="Deregulated (Control)"
-                    dot={false}
-                    strokeWidth={2}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              {causalChartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={350}>
+                  <LineChart data={causalChartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#3a3632" />
+                    <XAxis dataKey="date" stroke="#999999" />
+                    <YAxis stroke="#999999" />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#1c1b19",
+                        border: "1px solid #3a3632",
+                      }}
+                    />
+                    <Legend />
+                    <ReferenceLine
+                      x="2020-03"
+                      stroke="#c0392b"
+                      strokeDasharray="5 5"
+                      label="COVID-19"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="treated"
+                      stroke="#b8742a"
+                      name="Regulated (Treated)"
+                      dot={false}
+                      strokeWidth={2}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="control"
+                      stroke="#3a7ca5"
+                      name="Deregulated (Control)"
+                      dot={false}
+                      strokeWidth={2}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-64 flex items-center justify-center text-xs text-zinc-500">
+                  No chart data available
+                </div>
+              )}
               {causalData?.did?.result && (
                 <div className="mt-6 rounded border border-zinc-700 bg-zinc-900/50 p-4">
                   <p className="text-xs font-semibold text-zinc-300">
@@ -260,7 +283,7 @@ export default function SimulationSection() {
           )}
 
           {/* TAB 2: Agent-Based Model */}
-          {!loading && activeTab === "abm" && abmData && (
+          {!loading && activeTab === "abm" && (
             <div>
               <div className="mb-6 rounded border border-zinc-700 bg-zinc-900/50 p-4">
                 <label className="block text-xs font-semibold text-zinc-300 mb-3">
@@ -279,28 +302,34 @@ export default function SimulationSection() {
               <h3 className="mb-4 text-sm font-semibold text-zinc-300">
                 Critical Percentage by Income Quintile Over Time
               </h3>
-              <ResponsiveContainer width="100%" height={350}>
-                <LineChart data={abmData.monthly_series}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#3a3632" />
-                  <XAxis dataKey="month" stroke="#999999" />
-                  <YAxis stroke="#999999" label={{ value: "Critical %", angle: -90, position: "insideLeft" }} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#1c1b19",
-                      border: "1px solid #3a3632",
-                    }}
-                  />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="critical_pct"
-                    stroke="#b8742a"
-                    name="Critical Burden %"
-                    dot={false}
-                    strokeWidth={2}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              {abmData?.monthly_series && abmData.monthly_series.length > 0 ? (
+                <ResponsiveContainer width="100%" height={350}>
+                  <LineChart data={abmData.monthly_series}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#3a3632" />
+                    <XAxis dataKey="month" stroke="#999999" />
+                    <YAxis stroke="#999999" />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#1c1b19",
+                        border: "1px solid #3a3632",
+                      }}
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="critical_pct"
+                      stroke="#b8742a"
+                      name="Critical Burden %"
+                      dot={false}
+                      strokeWidth={2}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-64 flex items-center justify-center text-xs text-zinc-500">
+                  No data available
+                </div>
+              )}
 
               {abmData && (
                 <div className="mt-6 grid grid-cols-2 gap-4">
@@ -326,7 +355,7 @@ export default function SimulationSection() {
           )}
 
           {/* TAB 3: Reform Optimizer */}
-          {!loading && activeTab === "optimizer" && optimizerData && (
+          {!loading && activeTab === "optimizer" && (
             <div>
               <div className="mb-6 space-y-2">
                 <label className="block text-xs font-semibold text-zinc-300">
@@ -356,69 +385,77 @@ export default function SimulationSection() {
               <h3 className="mb-4 text-sm font-semibold text-zinc-300">
                 Optimal Reform Timeline
               </h3>
-              <ResponsiveContainer width="100%" height={350}>
-                <LineChart data={optimizerData.optimal_timeline}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#3a3632" />
-                  <XAxis dataKey="month" stroke="#999999" />
-                  <YAxis yAxisId="left" stroke="#999999" />
-                  <YAxis yAxisId="right" orientation="right" stroke="#999999" />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#1c1b19",
-                      border: "1px solid #3a3632",
-                    }}
-                  />
-                  <Legend />
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="subsidy_pct"
-                    stroke="#b8742a"
-                    name="Subsidy %"
-                    dot={false}
-                    strokeWidth={2}
-                  />
-                  <Line
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="shock_prob_pct"
-                    stroke="#c0392b"
-                    name="Shock Prob %"
-                    dot={false}
-                    strokeWidth={2}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-
-              <div className="mt-6">
-                <h4 className="mb-3 text-xs font-semibold text-zinc-300">
-                  Comparison vs Fixed Paths
-                </h4>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-xs text-zinc-300">
-                    <thead>
-                      <tr className="border-b border-zinc-700">
-                        <th className="text-left px-3 py-2">Path</th>
-                        <th className="text-right px-3 py-2">Welfare Loss</th>
-                        <th className="text-right px-3 py-2">Improvement</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {optimizerData.vs_fixed_paths.map((row) => (
-                        <tr key={row.path} className="border-b border-zinc-800">
-                          <td className="px-3 py-2">{row.path}</td>
-                          <td className="text-right px-3 py-2 font-mono">
-                            {row.welfare_loss.toFixed(2)}
-                          </td>
-                          <td className="text-right px-3 py-2 font-mono text-teal-400">
-                            +{row.improvement.toFixed(2)}%
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+              {optimizerData?.optimal_timeline && optimizerData.optimal_timeline.length > 0 ? (
+                <ResponsiveContainer width="100%" height={350}>
+                  <LineChart data={optimizerData.optimal_timeline}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#3a3632" />
+                    <XAxis dataKey="month" stroke="#999999" />
+                    <YAxis yAxisId="left" stroke="#999999" />
+                    <YAxis yAxisId="right" orientation="right" stroke="#999999" />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#1c1b19",
+                        border: "1px solid #3a3632",
+                      }}
+                    />
+                    <Legend />
+                    <Line
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="subsidy_pct"
+                      stroke="#b8742a"
+                      name="Subsidy %"
+                      dot={false}
+                      strokeWidth={2}
+                    />
+                    <Line
+                      yAxisId="right"
+                      type="monotone"
+                      dataKey="shock_prob_pct"
+                      stroke="#c0392b"
+                      name="Shock Prob %"
+                      dot={false}
+                      strokeWidth={2}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-64 flex items-center justify-center text-xs text-zinc-500">
+                  No data available
                 </div>
-              </div>
+              )}
+
+              {optimizerData?.vs_fixed_paths && (
+                <div className="mt-6">
+                  <h4 className="mb-3 text-xs font-semibold text-zinc-300">
+                    Comparison vs Fixed Paths
+                  </h4>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs text-zinc-300">
+                      <thead>
+                        <tr className="border-b border-zinc-700">
+                          <th className="text-left px-3 py-2">Path</th>
+                          <th className="text-right px-3 py-2">Welfare Loss</th>
+                          <th className="text-right px-3 py-2">Improvement</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {optimizerData.vs_fixed_paths.map((row) => (
+                          <tr key={row.path} className="border-b border-zinc-800">
+                            <td className="px-3 py-2">{row.path}</td>
+                            <td className="text-right px-3 py-2 font-mono">
+                              {row.welfare_loss.toFixed(2)}
+                            </td>
+                            <td className="text-right px-3 py-2 font-mono text-teal-400">
+                              +{row.improvement.toFixed(2)}%
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
