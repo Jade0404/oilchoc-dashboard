@@ -112,7 +112,7 @@ export default function SimulationSection() {
     if (activeTab !== "optimizer") return;
     setLoading(true);
     setError(null);
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reform-optimize?priority=${reformPriority}`)
+    fetch(`${BASE_URL}/api/reform-optimize?priority=${reformPriority}`)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
