@@ -161,3 +161,15 @@ def load_doeb() -> dict:
         "source": "Department of Energy Business (DOEB), Ministry of Energy, Thailand",
         "year_note": "BE 2560 = CE 2017",
     }
+
+
+# ── World Bank income classification ─────────────────────────────────────────
+
+@lru_cache(maxsize=1)
+def load_wb_class() -> dict[str, str]:
+    """Load World Bank income group classification (Code → Income group)."""
+    result = {}
+    with open(DATA_DIR / "wb_class.csv") as f:
+        for r in csv.DictReader(f):
+            result[r["Code"]] = r["Income group"]
+    return result

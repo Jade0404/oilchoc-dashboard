@@ -14,6 +14,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Cell,
 } from "recharts";
 import { useLang } from "../LanguageProvider";
 import { useTranslations } from "@/lib/translations";
@@ -113,34 +114,30 @@ export default function ReformRoadmapSection() {
                     }}
                   />
                   <Legend />
-                  {pricePathData.length > 0 && (
-                    <>
-                      <Line
-                        type="monotone"
-                        dataKey="fast"
-                        stroke="#C0392B"
-                        name="Fast Cut"
-                        dot={false}
-                        strokeWidth={2}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="gradual"
-                        stroke="#D4860A"
-                        name="Gradual Phase-Out"
-                        dot={false}
-                        strokeWidth={2}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="cashTransfer"
-                        stroke="#1A7A3C"
-                        name="Cash Transfer Switch"
-                        dot={false}
-                        strokeWidth={2}
-                      />
-                    </>
-                  )}
+                  <Line
+                    type="monotone"
+                    dataKey="fast"
+                    stroke="#C0392B"
+                    name="Fast Cut"
+                    dot={false}
+                    strokeWidth={2}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="gradual"
+                    stroke="#D4860A"
+                    name="Gradual Phase-Out"
+                    dot={false}
+                    strokeWidth={2}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="cashTransfer"
+                    stroke="#1A7A3C"
+                    name="Cash Transfer Switch"
+                    dot={false}
+                    strokeWidth={2}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -153,7 +150,7 @@ export default function ReformRoadmapSection() {
               </h3>
               <ResponsiveContainer width="100%" height={350}>
                 <ScatterChart
-                  margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+                  margin={{ top: 40, right: 20, bottom: 20, left: 20 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#3a3632" />
                   <XAxis
@@ -173,18 +170,37 @@ export default function ReformRoadmapSection() {
                       border: "1px solid #3a3632",
                     }}
                     cursor={{ strokeDasharray: "3 3" }}
+                    formatter={(value: any, name: string, props: any) => {
+                      if (name === "x") return [value.toFixed(2), "Fiscal Savings Index"];
+                      if (name === "y") return [value.toFixed(2), "Q1 Welfare Burden (%)"];
+                      return value;
+                    }}
+                    labelFormatter={(value) => {
+                      const entry = paretofrontierData.find((d) => d.x === value);
+                      return entry ? entry.label.replace("\n", " ") : "";
+                    }}
                   />
-                  <Scatter
-                    name="Reform Paths"
-                    data={paretofrontierData}
-                    fill="#b8742a"
-                  />
+                  <Scatter name="Reform Paths" data={paretofrontierData}>
+                    {paretofrontierData.map((entry, index) => {
+                      const colors: Record<string, string> = {
+                        A: "#C0392B",
+                        B: "#D4860A",
+                        C: "#1A7A3C",
+                      };
+                      return (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={colors[entry.path] || "#b8742a"}
+                        />
+                      );
+                    })}
+                  </Scatter>
                 </ScatterChart>
               </ResponsiveContainer>
-              <p className="mt-4 text-xs text-zinc-400">
-                💡 Path C dominates — lower welfare loss, comparable fiscal
-                savings
-              </p>
+              <div className="mt-4 space-y-1 text-xs text-zinc-400">
+                <p>Path A (Fast Cut): #C0392B | Path B (Gradual): #D4860A | Path C (Cash Transfer): #1A7A3C</p>
+                <p>Path C dominates — lower welfare loss, comparable fiscal savings</p>
+              </div>
             </div>
           )}
 

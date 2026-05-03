@@ -187,3 +187,57 @@ def score_reform_path(
         "fiscal_score":             fiscal_score,
         "composite_score":          composite,
     }
+
+
+def get_stratified_stats() -> dict:
+    """
+    Shock rate statistics stratified by World Bank income group.
+    Returns: {income_group: {n_regulated, n_deregulated, medians, ratio}}
+    """
+    from data_loader import load_country_vol, load_wb_class
+    
+    cv = load_country_vol()
+    wb_class = load_wb_class()
+    
+    income_groups = {
+        'Low income': [],
+        'Lower middle income': [],
+        'Upper middle income': [],
+        'High income': [],
+    }
+    
+    # Classify countries by income and regulation
+    for country_data in cv:
+        code = country_data['code']
+        income = wb_class.get(code, 'Lower middle income')
+        if income in income_groups:
+            income_groups[income].append(country_data)
+    
+    result = {}
+    for income_group, countries in income_groups.items():
+        if not countries:
+            result[income_group] = {
+                'n_regulated': 0,
+                'n_deregulated': 0,
+                'median_shock_regulated': None,
+                'median_shock_deregulated': None,
+                'ratio': None,
+            }
+            continue
+        
+        regulated = [c['shock_rate'] for c in countries if c['group'] == 'Regulated']
+        deregulated = [c['shock_rate'] for c in countries if c['group'] == 'Deregulated']
+        
+        med_reg = float(np.median(regulated)) if regulated else None
+        med_dereg = float(np.median(deregulated)) if deregulated else None
+        ratio = med_reg / med_dereg if (med_reg and med_dereg) else None
+        
+        result[income_group] = {
+            'n_regulated': len(regulated),
+            'n_deregulated': len(deregulated),
+            'median_shock_regulated_pct': round(med_reg * 100, 2) if med_reg else None,
+            'median_shock_deregulated_pct': round(med_dereg * 100, 2) if med_dereg else None,
+            'ratio': round(ratio, 2) if ratio else None,
+        }
+    
+    return result

@@ -20,10 +20,17 @@ import { useTranslations } from "@/lib/translations";
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 interface CausalData {
-  did_estimate_pp: number;
-  ci_95: [number, number];
-  treated_series: Array<{ date: string; avg_abs_change_pct: number }>;
-  control_series: Array<{ date: string; avg_abs_change_pct: number }>;
+  did: {
+    result: {
+      did_estimate_pp: number;
+      ci_95_pp: [number, number];
+    };
+    chart?: Array<{
+      date: string;
+      treated_avg_pct?: number;
+      control_avg_pct?: number;
+    }>;
+  };
 }
 
 interface ABMData {
@@ -130,22 +137,14 @@ export default function SimulationSection() {
   // Prepare causal chart data
   const causalChartData: Array<{ date: string; treated?: number; control?: number }> = [];
 
-  if (causalData) {
-    const dateMap = new Map<string, { date: string; treated?: number; control?: number }>();
-
-    (causalData.treated_series || []).forEach((d) => {
-      const entry = dateMap.get(d.date) || { date: d.date };
-      entry.treated = d.avg_abs_change_pct;
-      dateMap.set(d.date, entry);
+  if (causalData?.did?.chart) {
+    causalData.did.chart.forEach((d) => {
+      causalChartData.push({
+        date: d.date,
+        treated: d.treated_avg_pct,
+        control: d.control_avg_pct,
+      });
     });
-
-    (causalData.control_series || []).forEach((d) => {
-      const entry = dateMap.get(d.date) || { date: d.date };
-      entry.control = d.avg_abs_change_pct;
-      dateMap.set(d.date, entry);
-    });
-
-    causalChartData.push(...Array.from(dateMap.values()));
   }
 
   return (
@@ -242,17 +241,17 @@ export default function SimulationSection() {
                   />
                 </LineChart>
               </ResponsiveContainer>
-              {causalData && (
+              {causalData?.did?.result && (
                 <div className="mt-6 rounded border border-zinc-700 bg-zinc-900/50 p-4">
                   <p className="text-xs font-semibold text-zinc-300">
                     Difference-in-Differences Estimate
                   </p>
                   <p className="mt-2 font-mono text-lg font-bold text-teal-400">
-                    DiD: +{causalData.did_estimate_pp?.toFixed(2) ?? "—"}pp (95% CI [
-                    {causalData.ci_95?.[0]?.toFixed(2) ?? "—"}, {causalData.ci_95?.[1]?.toFixed(2) ?? "—"}])
+                    DiD: +{causalData.did.result.did_estimate_pp?.toFixed(2) ?? "—"}pp (95% CI [
+                    {causalData.did.result.ci_95_pp?.[0]?.toFixed(2) ?? "—"}, {causalData.did.result.ci_95_pp?.[1]?.toFixed(2) ?? "—"}])
                   </p>
                   <p className="mt-1 text-xs text-zinc-400">
-                    Regulated markets experienced {causalData.did_estimate_pp?.toFixed(2) ?? "—"} percentage
+                    Regulated markets experienced {causalData.did.result.did_estimate_pp?.toFixed(2) ?? "—"} percentage
                     points MORE volatility increase during COVID than deregulated markets.
                   </p>
                 </div>

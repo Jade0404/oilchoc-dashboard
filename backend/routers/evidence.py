@@ -131,3 +131,14 @@ def get_summary():
         "observation_months":          113,
         "period":                      "Dec 2015 – Apr 2025",
     }
+
+
+@router.get("/stratified")
+def get_stratified_stats():
+    """
+    Shock rate statistics stratified by World Bank income group.
+    4 income groups: Low / Lower-middle / Upper-middle / High income
+    For each: n_regulated, n_deregulated, median shocks, ratio
+    """
+    from models.statistical import get_stratified_stats
+    return get_stratified_stats()
