@@ -124,19 +124,25 @@ export default function SimulationSection() {
         return r.json();
       })
       .then((data) => {
+        console.log("Reform optimizer API response:", data);
         const timeline = data.paths?.fast_cut?.timeline || [];
+        console.log("Extracted timeline array:", timeline);
         const transformedData: ReformOptimizerData = {
-          optimal_timeline: timeline.map((t: any) => ({
-            month: t.month,
-            subsidy_pct: t.subsidy_pct,
-            shock_prob_pct: t.shock_prob,
-          })),
+          optimal_timeline: timeline.map((t: any) => {
+            const transformed = {
+              month: t.month,
+              subsidy_pct: t.subsidy_pct,
+              shock_prob_pct: t.shock_prob,
+            };
+            return transformed;
+          }),
           vs_fixed_paths: [
             { path: "Fast Cut", welfare_loss: 8.5, improvement: 0 },
             { path: "Gradual", welfare_loss: 6.2, improvement: 27 },
             { path: "Cash Transfer", welfare_loss: 4.1, improvement: 52 },
           ],
         };
+        console.log("Transformed optimal_timeline:", transformedData.optimal_timeline);
         setOptimizerData(transformedData);
       })
       .catch((err) => setError(`Optimizer: ${err.message}`))
@@ -260,8 +266,11 @@ export default function SimulationSection() {
                   </LineChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-64 flex items-center justify-center text-xs text-zinc-500">
-                  No chart data available
+                <div className="h-64 flex items-center justify-center text-center">
+                  <div>
+                    <p className="text-xs text-zinc-500">Time series chart requires country-level data for</p>
+                    <p className="text-xs text-zinc-500">Thailand, Malaysia, Indonesia vs Germany, United States</p>
+                  </div>
                 </div>
               )}
               {causalData?.did?.result && (

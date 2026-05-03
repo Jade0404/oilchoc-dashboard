@@ -22,14 +22,18 @@ import { useTranslations } from "@/lib/translations";
 // Hardcoded price path data (static simulation, not fetched from API)
 const pricePathData = Array.from({ length: 36 }, (_, i) => {
   const month = i + 1;
+  // Path A: Fast cut — drops from 100 to 50 in 12 months, then stable
+  const fastPrice = month <= 12 ? 100 - (month / 12) * 50 : 50;
+  // Path B: Gradual — drops from 100 to 60 over 48 months
+  const gradualPrice = Math.max(60, 100 - (month / 48) * 40);
+  // Path C: Cash transfer — drops from 100 to 55 in 24 months, then stable
+  const cashTransferPrice = month <= 24 ? 100 - (month / 24) * 45 : 55;
+
   return {
     month,
-    // Path A: Fast cut — drops from 100 to 50 in 12 months
-    fast: month <= 12 ? 100 - (month / 12) * 50 : 50,
-    // Path B: Gradual — drops from 100 to 60 in 48 months
-    gradual: Math.max(60, 100 - (month / 48) * 40),
-    // Path C: Cash transfer — drops from 100 to 55 in 24 months
-    cashTransfer: month <= 24 ? 100 - (month / 24) * 45 : 55,
+    "Path A (Fast Cut)": fastPrice,
+    "Path B (Gradual)": gradualPrice,
+    "Path C (Cash Transfer)": cashTransferPrice,
   };
 });
 
@@ -119,25 +123,22 @@ export default function ReformRoadmapSection() {
                   <Legend />
                   <Line
                     type="monotone"
-                    dataKey="fast"
+                    dataKey="Path A (Fast Cut)"
                     stroke="#C0392B"
-                    name="Fast Cut"
                     dot={false}
                     strokeWidth={2}
                   />
                   <Line
                     type="monotone"
-                    dataKey="gradual"
+                    dataKey="Path B (Gradual)"
                     stroke="#D4860A"
-                    name="Gradual Phase-Out"
                     dot={false}
                     strokeWidth={2}
                   />
                   <Line
                     type="monotone"
-                    dataKey="cashTransfer"
+                    dataKey="Path C (Cash Transfer)"
                     stroke="#1A7A3C"
-                    name="Cash Transfer Switch"
                     dot={false}
                     strokeWidth={2}
                   />
