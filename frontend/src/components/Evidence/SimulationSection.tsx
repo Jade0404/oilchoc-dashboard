@@ -120,13 +120,13 @@ export default function SimulationSection() {
       .then((data) => {
         console.log('optimizer response:', JSON.stringify(data, null, 2));
         const transformedData: ReformOptimizerData = {
-          optimal_timeline: data?.optimal_timeline ?? [],
-          vs_fixed_paths: [
-            { path: "Fast Cut", welfare_loss: 8.5, improvement: 0 },
-            { path: "Gradual", welfare_loss: 6.2, improvement: 27 },
-            { path: "Cash Transfer", welfare_loss: 4.1, improvement: 52 },
-          ],
-        };
+        optimal_timeline: data?.paths?.fast_cut?.timeline ?? [],
+        vs_fixed_paths: [
+        { path: "Fast Cut",      welfare_loss: data?.paths?.fast_cut?.scores?.composite_score ?? 0,      improvement: 0  },
+        { path: "Gradual",       welfare_loss: data?.paths?.gradual?.scores?.composite_score ?? 0,       improvement: 27 },
+        { path: "Cash Transfer", welfare_loss: data?.paths?.cash_transfer?.scores?.composite_score ?? 0, improvement: 52 },
+        ],
+      };
         setOptimizerData(transformedData);
       })
       .catch((err) => setError(`Optimizer: ${err.message}`))
@@ -395,7 +395,7 @@ export default function SimulationSection() {
                     <Line
                       yAxisId="right"
                       type="monotone"
-                      dataKey="shock_prob_pct"
+                      dataKey="shock_prob"
                       stroke="#ef4444"
                       name="Shock Prob %"
                       dot={false}
