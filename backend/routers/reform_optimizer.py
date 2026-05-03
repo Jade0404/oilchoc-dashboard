@@ -17,7 +17,7 @@ class ReformResponse(BaseModel):
     paths: dict
 
 
-@router.post("", response_model=ReformResponse)
+@router.get("", response_model=ReformResponse)
 def optimize_reform(req: ReformRequest):
     current = req.current_subsidy_pct / 100.0
     paths_out = {}
