@@ -25,10 +25,11 @@ interface CausalData {
       did_estimate_pp: number;
       ci_95_pp: [number, number];
     };
-    chart?: Array<{
+    chart_data?: Array<{
       date: string;
-      treated_avg_pct?: number;
-      control_avg_pct?: number;
+      treated_avg_pct: number;
+      control_avg_pct: number;
+      is_post: boolean;
     }>;
   };
 }
@@ -111,55 +112,30 @@ export default function SimulationSection() {
     if (activeTab !== "optimizer") return;
     setLoading(true);
     setError(null);
-    fetch(`${BASE_URL}/api/simulation/optimize`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        current_subsidy_pct: 30,
-        priority: reformPriority,
-      }),
-    })
+    const url = `${BASE_URL}/api/reform-optimize?priority=${encodeURIComponent(reformPriority)}`;
+    fetch(url)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
       })
       .then((data) => {
-        console.log("Reform optimizer API response:", data);
-        const timeline = data.paths?.fast_cut?.timeline || [];
-        console.log("Extracted timeline array:", timeline);
+        console.log('optimizer response:', JSON.stringify(data, null, 2));
         const transformedData: ReformOptimizerData = {
-          optimal_timeline: timeline.map((t: any) => {
-            const transformed = {
-              month: t.month,
-              subsidy_pct: t.subsidy_pct,
-              shock_prob_pct: t.shock_prob,
-            };
-            return transformed;
-          }),
+          optimal_timeline: data?.optimal_timeline ?? [],
           vs_fixed_paths: [
             { path: "Fast Cut", welfare_loss: 8.5, improvement: 0 },
             { path: "Gradual", welfare_loss: 6.2, improvement: 27 },
             { path: "Cash Transfer", welfare_loss: 4.1, improvement: 52 },
           ],
         };
-        console.log("Transformed optimal_timeline:", transformedData.optimal_timeline);
         setOptimizerData(transformedData);
       })
       .catch((err) => setError(`Optimizer: ${err.message}`))
       .finally(() => setLoading(false));
   }, [reformPriority, activeTab]);
 
-  // Prepare causal chart data
-  const causalChartData: Array<{ date: string; treated?: number; control?: number }> = [];
-  if (causalData?.did?.chart) {
-    causalData.did.chart.forEach((d) => {
-      causalChartData.push({
-        date: d.date,
-        treated: d.treated_avg_pct,
-        control: d.control_avg_pct,
-      });
-    });
-  }
+  // Prepare causal chart data (use exact API field names)
+  const causalChartData = causalData?.did?.chart_data ?? [];
 
   return (
     <section className="border-t border-zinc-800 px-6 py-10 md:px-12">
@@ -245,11 +221,11 @@ export default function SimulationSection() {
                       x="2020-03"
                       stroke="#c0392b"
                       strokeDasharray="5 5"
-                      label="COVID-19"
+                      label="COVID Shock"
                     />
                     <Line
                       type="monotone"
-                      dataKey="treated"
+                      dataKey="treated_avg_pct"
                       stroke="#b8742a"
                       name="Regulated (Treated)"
                       dot={false}
@@ -257,8 +233,8 @@ export default function SimulationSection() {
                     />
                     <Line
                       type="monotone"
-                      dataKey="control"
-                      stroke="#3a7ca5"
+                      dataKey="control_avg_pct"
+                      stroke="#6dd1ff"
                       name="Deregulated (Control)"
                       dot={false}
                       strokeWidth={2}
@@ -394,9 +370,9 @@ export default function SimulationSection() {
               <h3 className="mb-4 text-sm font-semibold text-zinc-300">
                 Optimal Reform Timeline
               </h3>
-              {optimizerData?.optimal_timeline && optimizerData.optimal_timeline.length > 0 ? (
+              {(optimizerData?.optimal_timeline ?? []).length > 0 ? (
                 <ResponsiveContainer width="100%" height={350}>
-                  <LineChart data={optimizerData.optimal_timeline}>
+                  <LineChart data={optimizerData?.optimal_timeline ?? []}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#3a3632" />
                     <XAxis dataKey="month" stroke="#999999" />
                     <YAxis yAxisId="left" stroke="#999999" />
@@ -421,7 +397,7 @@ export default function SimulationSection() {
                       yAxisId="right"
                       type="monotone"
                       dataKey="shock_prob_pct"
-                      stroke="#c0392b"
+                      stroke="#ef4444"
                       name="Shock Prob %"
                       dot={false}
                       strokeWidth={2}
