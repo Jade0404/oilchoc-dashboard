@@ -23,12 +23,8 @@ export const fetchStressTest = (subsidyLevel: number, marketType: MarketType) =>
     body: JSON.stringify({ subsidy_level: subsidyLevel / 100, market_type: marketType }),
   });
 
-export const fetchReformOptimize = (currentSubsidyPct: number) =>
-  apiFetch<ReformResponse>("/api/reform-optimize", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ current_subsidy_pct: currentSubsidyPct }),
-  });
+export const fetchReformOptimize = (priority: "fiscal" | "balanced" | "equity" = "balanced") =>
+  apiFetch<ReformResponse>(`/api/reform-optimize?priority=${priority}`);
 
 export const fetchEvidenceSummary = () =>
   apiFetch<EvidenceSummary>("/api/evidence/summary");

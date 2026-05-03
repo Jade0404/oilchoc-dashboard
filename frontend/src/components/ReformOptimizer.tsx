@@ -69,14 +69,14 @@ export default function ReformOptimizer() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const result = await fetchReformOptimize(subsidy);
+      const result = await fetchReformOptimize("balanced");
       setData(result);
     } catch {
       // keep fallback
     } finally {
       setLoading(false);
     }
-  }, [subsidy]);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(load, 400);
