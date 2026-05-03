@@ -120,7 +120,11 @@ export default function SimulationSection() {
       .then((data) => {
         console.log('optimizer response:', JSON.stringify(data, null, 2));
         const transformedData: ReformOptimizerData = {
-        optimal_timeline: data?.paths?.fast_cut?.timeline ?? [],
+        optimal_timeline: data?.paths?.[
+        reformPriority === "fiscal" ? "fast_cut" : 
+        reformPriority === "equity" ? "cash_transfer" : 
+        "gradual"
+        ]?.timeline ?? [],
         vs_fixed_paths: [
         { path: "Fast Cut",      welfare_loss: data?.paths?.fast_cut?.scores?.composite_score ?? 0,      improvement: 0  },
         { path: "Gradual",       welfare_loss: data?.paths?.gradual?.scores?.composite_score ?? 0,       improvement: 27 },
